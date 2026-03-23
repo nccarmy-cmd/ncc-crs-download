@@ -1,354 +1,239 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="device">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>NCC CRS — Download App</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-/* ── Theme variables ── */
+/* ── Themes ── */
 :root {
-  --bg:       #060b18; --card:    #0d1425; --card2:   #111c30;
-  --border:   rgba(99,102,241,0.18); --border2: rgba(99,102,241,0.1);
-  --indigo:   #4f46e5; --indigo-l:#818cf8;
-  --green:    #34d399; --amber:   #fbbf24; --red:     #f87171;
-  --text:     #e2e8f0; --muted:   #64748b; --sub:     #94a3b8;
-  --input-bg: rgba(15,23,42,0.8); --input-border: rgba(99,102,241,0.25);
-  --shadow:   0 8px 32px rgba(0,0,0,0.45);
-  --mono:     'JetBrains Mono',monospace;
-  --syne:     'Syne',sans-serif;
+  --bg:#060b18;--card:#0d1425;--card2:#111c30;
+  --border:rgba(99,102,241,0.18);--border2:rgba(99,102,241,0.1);
+  --indigo:#4f46e5;--indigo-l:#818cf8;
+  --green:#34d399;--amber:#fbbf24;--red:#f87171;
+  --text:#e2e8f0;--muted:#64748b;--sub:#94a3b8;
+  --input-bg:rgba(15,23,42,0.9);--input-border:rgba(99,102,241,0.28);
+  --shadow:0 8px 32px rgba(0,0,0,0.5);
+  --overlay:rgba(0,0,0,0.75);
+  --mono:'JetBrains Mono',monospace;--syne:'Syne',sans-serif;
 }
 [data-theme="light"] {
-  --bg:       #f1f5f9; --card:    #ffffff; --card2:   #f8fafc;
-  --border:   rgba(99,102,241,0.2); --border2: rgba(99,102,241,0.1);
-  --text:     #0f172a; --muted:   #64748b; --sub:     #475569;
-  --input-bg: #ffffff; --input-border: rgba(99,102,241,0.3);
-  --shadow:   0 8px 32px rgba(0,0,0,0.1);
+  --bg:#f1f5f9;--card:#ffffff;--card2:#f8fafc;
+  --border:rgba(99,102,241,0.2);--border2:rgba(99,102,241,0.1);
+  --text:#0f172a;--muted:#64748b;--sub:#475569;
+  --input-bg:#f8fafc;--input-border:rgba(99,102,241,0.3);
+  --shadow:0 8px 32px rgba(0,0,0,0.1);
+  --overlay:rgba(15,23,42,0.6);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--mono);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:0 1rem 4rem;transition:background 0.25s,color 0.25s;
 }
 
-*{ box-sizing:border-box; margin:0; padding:0; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 1rem 4rem;
-  transition: background 0.25s, color 0.25s;
+/* ── Topbar ── */
+.topbar{
+  width:100%;max-width:480px;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 0 0.5rem;margin-bottom:1.5rem;
 }
-
-/* ── Top bar ── */
-.topbar {
-  width: 100%; max-width: 480px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.1rem 0 0.5rem;
-  margin-bottom: 1.5rem;
-}
-.topbar-unit {
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.theme-toggle {
-  display: flex;
-  gap: 0.2rem;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 2rem;
-  padding: 0.2rem;
-}
-.theme-btn {
-  border: none;
-  background: transparent;
-  border-radius: 2rem;
-  padding: 0.28rem 0.6rem;
-  cursor: pointer;
-  font-size: 0.75rem;
-  color: var(--muted);
-  transition: all 0.15s;
-  line-height: 1;
-}
-.theme-btn.active {
-  background: var(--indigo);
-  color: white;
-}
+.topbar-unit{font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+.theme-toggle{display:flex;gap:0.2rem;background:var(--card);border:1px solid var(--border);border-radius:2rem;padding:0.2rem;}
+.theme-btn{border:none;background:transparent;border-radius:2rem;padding:0.28rem 0.6rem;cursor:pointer;font-size:0.75rem;color:var(--muted);transition:all 0.15s;line-height:1;}
+.theme-btn.active{background:var(--indigo);color:white;}
 
 /* ── Header ── */
-.header {
-  text-align: center;
-  margin-bottom: 1.75rem;
-  animation: fade-in 0.4s ease both;
+.header{text-align:center;margin-bottom:1.75rem;animation:fade-in 0.4s ease both;}
+.unit-badge{
+  display:inline-block;font-size:0.58rem;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--indigo-l);
+  background:rgba(79,70,229,0.1);border:1px solid rgba(79,70,229,0.22);
+  padding:0.28rem 0.85rem;border-radius:2rem;margin-bottom:0.85rem;
 }
-.unit-badge {
-  display: inline-block;
-  font-size: 0.58rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--indigo-l);
-  background: rgba(79,70,229,0.1);
-  border: 1px solid rgba(79,70,229,0.22);
-  padding: 0.28rem 0.85rem;
-  border-radius: 2rem;
-  margin-bottom: 0.85rem;
-}
-.title {
-  font-family: var(--syne);
-  font-size: clamp(2rem,6vw,3rem);
-  font-weight: 800;
-  color: var(--text);
-  line-height: 1.1;
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.01em;
-}
-.title span { color: var(--indigo-l); }
-.subtitle {
-  font-size: 0.68rem;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-}
+.title{font-family:var(--syne);font-size:clamp(2rem,6vw,3rem);font-weight:800;color:var(--text);line-height:1.1;margin-bottom:0.4rem;}
+.title span{color:var(--indigo-l);}
+.subtitle{font-size:0.68rem;color:var(--muted);letter-spacing:0.05em;}
 
 /* ── Card ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 1.1rem;
-  padding: 1.6rem;
-  width: 100%;
-  max-width: 440px;
-  box-shadow: var(--shadow);
-  animation: fade-in 0.4s ease 0.1s both;
-  transition: background 0.25s, border-color 0.25s;
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:1.1rem;padding:1.6rem;width:100%;max-width:440px;
+  box-shadow:var(--shadow);animation:fade-in 0.4s ease 0.1s both;
+  transition:background 0.25s,border-color 0.25s;
 }
 
 /* ── Version row ── */
-.version-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border2);
+.version-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:1.1rem;padding-bottom:1rem;border-bottom:1px solid var(--border2);
 }
-.version-tag {
-  font-family: var(--syne);
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+.version-tag{font-family:var(--syne);font-size:1.35rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:0.4rem;}
+.badge-latest{
+  font-size:0.52rem;font-weight:700;padding:0.12rem 0.5rem;border-radius:0.25rem;
+  text-transform:uppercase;letter-spacing:0.08em;
+  background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--green);
 }
-.badge-latest {
-  font-size: 0.52rem;
-  font-weight: 700;
-  padding: 0.12rem 0.5rem;
-  border-radius: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: rgba(52,211,153,0.1);
-  border: 1px solid rgba(52,211,153,0.3);
-  color: var(--green);
-}
-.version-meta {
-  text-align: right;
-  font-size: 0.6rem;
-  color: var(--muted);
-  line-height: 1.8;
-}
+.version-meta{text-align:right;font-size:0.6rem;color:var(--muted);line-height:1.8;}
 
 /* ── Changelog ── */
-.changelog { margin-bottom: 1.35rem; }
-.section-label {
-  font-size: 0.56rem;
-  color: var(--indigo-l);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  margin-bottom: 0.6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.cl-item {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.68rem;
-  color: var(--sub);
-  line-height: 1.65;
-  padding: 0.18rem 0;
-}
-.cl-item::before { content:'→'; color:var(--indigo-l); flex-shrink:0; }
+.changelog{margin-bottom:1.35rem;}
+.section-label{font-size:0.56rem;color:var(--indigo-l);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+.cl-item{display:flex;gap:0.5rem;font-size:0.68rem;color:var(--sub);line-height:1.65;padding:0.18rem 0;}
+.cl-item::before{content:'→';color:var(--indigo-l);flex-shrink:0;}
 
-/* ── Gate form ── */
-.gate { margin-bottom: 0.85rem; }
-.field-label {
-  font-size: 0.58rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  display: block;
-  margin-bottom: 0.45rem;
+/* ── Unlock button ── */
+.unlock-btn{
+  width:100%;padding:0.85rem;background:var(--indigo);border:none;
+  border-radius:0.65rem;color:#fff;font-family:var(--mono);
+  font-size:0.85rem;font-weight:700;letter-spacing:0.05em;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:0.55rem;
 }
-.gate-input {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  color: var(--text);
-  border-radius: 0.55rem;
-  padding: 0.62rem 0.9rem;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  letter-spacing: 0.04em;
-}
-.gate-input:focus {
-  border-color: var(--indigo-l);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
-}
-.gate-input::placeholder { color: var(--muted); opacity:0.55; }
-.gate-hint {
-  font-size: 0.56rem;
-  color: var(--muted);
-  margin-top: 0.35rem;
-  opacity: 0.7;
-  line-height: 1.5;
-}
-
-/* ── Name suggestion ── */
-.name-suggestion {
-  display: none;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.68rem;
-  color: var(--green);
-  background: rgba(52,211,153,0.07);
-  border: 1px solid rgba(52,211,153,0.2);
-  border-radius: 0.45rem;
-  padding: 0.45rem 0.7rem;
-  margin-top: 0.4rem;
-  margin-bottom: 0.6rem;
-}
-.name-suggestion.show { display: flex; }
-
-/* ── Messages ── */
-.msg {
-  font-size: 0.67rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.45rem;
-  margin-bottom: 0.75rem;
-  display: none;
-  align-items: center;
-  gap: 0.4rem;
-  line-height: 1.5;
-}
-.msg--error { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); color:var(--red); }
-.msg--ok    { background:rgba(52,211,153,0.08);  border:1px solid rgba(52,211,153,0.25); color:var(--green); }
-.msg--warn  { background:rgba(251,191,36,0.08);  border:1px solid rgba(251,191,36,0.25); color:var(--amber); }
-.msg.show   { display:flex; }
-
-/* ── Download button ── */
-.dl-btn {
-  width: 100%;
-  padding: 0.82rem;
-  background: var(--indigo);
-  border: none;
-  border-radius: 0.65rem;
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.dl-btn:hover:not(:disabled) {
-  background: #4338ca;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(79,70,229,0.35);
-}
-.dl-btn:disabled { opacity:0.35; cursor:not-allowed; transform:none; box-shadow:none; }
-.dl-btn--locked  { background:rgba(79,70,229,0.22); border:1px solid rgba(79,70,229,0.3); }
-
-/* ── Spinner ── */
-.spinner {
-  width:14px; height:14px;
-  border:2px solid rgba(255,255,255,0.3);
-  border-top-color:white;
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-  flex-shrink:0;
-}
+.unlock-btn:hover{background:#4338ca;transform:translateY(-1px);box-shadow:0 8px 24px rgba(79,70,229,0.35);}
 
 /* ── File info ── */
-.file-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 0.5rem;
-  margin-top: 0.85rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--border2);
+.file-info{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:0.5rem;margin-top:0.85rem;padding-top:0.85rem;
+  border-top:1px solid var(--border2);
 }
-.fi-item { font-size: 0.56rem; color: var(--muted); line-height: 1.7; }
-.fi-val  { color: var(--sub); font-weight: 600; font-size: 0.62rem; }
+.fi-item{font-size:0.56rem;color:var(--muted);line-height:1.7;}
+.fi-val{color:var(--sub);font-weight:600;font-size:0.62rem;}
+
+/* ══════════════════════════════════════════════
+   MODAL OVERLAY
+══════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--overlay);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+
+.modal{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:1.2rem;padding:2rem 1.75rem;
+  width:100%;max-width:400px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.6);
+  transform:scale(0.95) translateY(16px);
+  transition:transform 0.25s cubic-bezier(0.4,0,0.2,1),opacity 0.25s;
+  opacity:0;
+}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);opacity:1;}
+
+/* Modal — verification state */
+.modal-verify{}
+.modal-header{text-align:center;margin-bottom:1.5rem;}
+.modal-icon{font-size:2rem;margin-bottom:0.6rem;}
+.modal-title{font-family:var(--syne);font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:0.3rem;}
+.modal-sub{font-size:0.65rem;color:var(--muted);line-height:1.6;}
+
+.field-label{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.45rem;}
+.modal-input{
+  width:100%;background:var(--input-bg);border:1px solid var(--input-border);
+  color:var(--text);border-radius:0.55rem;padding:0.65rem 0.9rem;
+  font-family:var(--mono);font-size:0.8rem;outline:none;
+  transition:border-color 0.15s,box-shadow 0.15s;letter-spacing:0.04em;
+  margin-bottom:0.85rem;
+}
+.modal-input:focus{border-color:var(--indigo-l);box-shadow:0 0 0 3px rgba(99,102,241,0.12);}
+.modal-input::placeholder{color:var(--muted);opacity:0.55;}
+.modal-input:last-of-type{margin-bottom:0;}
+
+.msg{
+  font-size:0.67rem;padding:0.5rem 0.75rem;border-radius:0.45rem;
+  margin-top:0.75rem;display:none;align-items:center;gap:0.4rem;line-height:1.5;
+}
+.msg--error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.3);color:var(--red);}
+.msg.show{display:flex;}
+
+.verify-btn{
+  width:100%;margin-top:1rem;padding:0.78rem;
+  background:var(--indigo);border:none;border-radius:0.6rem;
+  color:#fff;font-family:var(--mono);font-size:0.82rem;font-weight:700;
+  letter-spacing:0.05em;cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:0.5rem;
+}
+.verify-btn:hover:not(:disabled){background:#4338ca;transform:translateY(-1px);}
+.verify-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+.modal-close-row{text-align:center;margin-top:0.85rem;}
+.modal-cancel{
+  background:none;border:none;font-family:var(--mono);
+  font-size:0.62rem;color:var(--muted);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;
+  transition:color 0.15s;
+}
+.modal-cancel:hover{color:var(--sub);}
+
+/* Modal — welcome state */
+.modal-welcome{display:none;}
+.welcome-badge{
+  display:flex;align-items:center;justify-content:center;
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(52,211,153,0.12);border:2px solid rgba(52,211,153,0.3);
+  font-size:1.8rem;margin:0 auto 1rem;
+}
+.welcome-rank{
+  font-size:0.6rem;color:var(--indigo-l);text-transform:uppercase;
+  letter-spacing:0.14em;margin-bottom:0.25rem;text-align:center;
+}
+.welcome-name{
+  font-family:var(--syne);font-size:1.3rem;font-weight:800;
+  color:var(--text);text-align:center;margin-bottom:0.3rem;line-height:1.2;
+}
+.welcome-msg{font-size:0.68rem;color:var(--sub);text-align:center;line-height:1.6;margin-bottom:1.5rem;}
+
+.dl-btn{
+  width:100%;padding:0.85rem;background:var(--green);border:none;
+  border-radius:0.65rem;color:#0f172a;font-family:var(--mono);
+  font-size:0.85rem;font-weight:700;letter-spacing:0.05em;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:0.55rem;
+}
+.dl-btn:hover:not(:disabled){background:#2dd4bf; /* slightly shifted green */ transform:translateY(-1px);box-shadow:0 8px 24px rgba(52,211,153,0.35);}
+.dl-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+
+.spinner{
+  width:14px;height:14px;
+  border:2px solid rgba(15,23,42,0.3);border-top-color:#0f172a;
+  border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;
+}
 
 /* ── Install guide ── */
-.guide {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 1.1rem;
-  padding: 1.35rem 1.5rem;
-  width: 100%;
-  max-width: 440px;
-  margin-top: 1.25rem;
-  box-shadow: var(--shadow);
-  animation: fade-in 0.4s ease 0.2s both;
-  transition: background 0.25s;
+.guide{
+  background:var(--card);border:1px solid var(--border);border-radius:1.1rem;
+  padding:1.35rem 1.5rem;width:100%;max-width:440px;
+  margin-top:1.25rem;box-shadow:var(--shadow);
+  animation:fade-in 0.4s ease 0.2s both;transition:background 0.25s;
 }
-.step {
-  display: flex;
-  gap: 0.7rem;
-  align-items: flex-start;
-  padding: 0.42rem 0;
+.step{display:flex;gap:0.7rem;align-items:flex-start;padding:0.42rem 0;}
+.step-num{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(79,70,229,0.12);border:1px solid rgba(79,70,229,0.28);
+  color:var(--indigo-l);font-size:0.58rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:0.1rem;
 }
-.step-num {
-  width:22px; height:22px;
-  border-radius:50%;
-  background:rgba(79,70,229,0.12);
-  border:1px solid rgba(79,70,229,0.28);
-  color:var(--indigo-l);
-  font-size:0.58rem; font-weight:700;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; margin-top:0.1rem;
-}
-.step-text { font-size:0.68rem; color:var(--sub); line-height:1.65; }
-.step-text strong { color:var(--text); }
+.step-text{font-size:0.68rem;color:var(--sub);line-height:1.65;}
+.step-text strong{color:var(--text);}
 
 /* ── Footer ── */
-.footer {
-  margin-top: 1.75rem;
-  text-align: center;
-  font-size: 0.56rem;
-  color: var(--muted);
-  line-height: 1.9;
-  animation: fade-in 0.4s ease 0.3s both;
-}
+.footer{margin-top:1.75rem;text-align:center;font-size:0.56rem;color:var(--muted);line-height:1.9;animation:fade-in 0.4s ease 0.3s both;}
 
-@keyframes fade-in { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes spin    { to{transform:rotate(360deg)} }
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<!-- ── Top bar ── -->
+<!-- ── Topbar ── -->
 <div class="topbar">
   <span class="topbar-unit">2(A) EME Unit · NBKRIST</span>
   <div class="theme-toggle">
@@ -365,9 +250,8 @@ body {
   <p class="subtitle">Cadets Records System · 2(A) EME Unit NCC</p>
 </div>
 
-<!-- ── Download Card ── -->
+<!-- ── Main Card ── -->
 <div class="card">
-
   <div class="version-row">
     <div>
       <div class="version-tag">v1.2.0 <span class="badge-latest">Latest</span></div>
@@ -385,43 +269,8 @@ body {
     <div class="cl-item">Invitation card layout improvements</div>
   </div>
 
-  <!-- Step 1: Enrollment -->
-  <div class="gate" id="gate-enrollment">
-    <label class="field-label" for="enrollment">① Enrollment Number</label>
-    <input class="gate-input" id="enrollment" type="text"
-      placeholder="e.g. AP/2023/SDA/418617"
-      autocomplete="off" autocorrect="off"
-      autocapitalize="characters" spellcheck="false"
-      oninput="onEnrollmentInput()" onkeydown="if(event.key==='Enter')onEnrollmentInput()"/>
-    <p class="gate-hint">Enter your NCC enrollment number exactly as issued.</p>
-  </div>
-
-  <!-- Name suggestion after enrollment found -->
-  <div class="name-suggestion" id="name-suggestion">
-    <span>✓</span>
-    <span id="name-suggestion-text">Found: —</span>
-  </div>
-
-  <!-- Step 2: Name confirmation -->
-  <div class="gate" id="gate-name" style="display:none;">
-    <label class="field-label" for="name-input">② Confirm Your Name</label>
-    <input class="gate-input" id="name-input" type="text"
-      placeholder="Enter your full name"
-      autocomplete="off" autocorrect="off"
-      autocapitalize="words" spellcheck="false"
-      oninput="onNameInput()" onkeydown="if(event.key==='Enter')handleDownload()"/>
-    <p class="gate-hint">Type your name as registered. Must match your record.</p>
-  </div>
-
-  <!-- Messages -->
-  <div class="msg msg--error" id="msg-error"><span>⚠</span><span id="msg-error-text">Invalid.</span></div>
-  <div class="msg msg--warn"  id="msg-warn" ><span>⚡</span><span id="msg-warn-text">Check your name.</span></div>
-  <div class="msg msg--ok"    id="msg-ok"   ><span>✓</span><span>Identity verified. Your download is starting…</span></div>
-
-  <!-- Download button -->
-  <button class="dl-btn dl-btn--locked" id="dl-btn" onclick="handleDownload()">
-    <span id="btn-icon">🔒</span>
-    <span id="btn-text">Enter Enrollment Number</span>
+  <button class="unlock-btn" onclick="openModal()">
+    🔐 Verify Identity to Download
   </button>
 
   <div class="file-info">
@@ -435,12 +284,12 @@ body {
 <!-- ── Install Guide ── -->
 <div class="guide">
   <p class="section-label">📱 Installation Guide</p>
-  <div class="step"><div class="step-num">1</div><div class="step-text">Enter your <strong>enrollment number</strong> and <strong>confirm your name</strong> above.</div></div>
-  <div class="step"><div class="step-num">2</div><div class="step-text">Tap <strong>Download APK</strong>. If browser warns, tap <strong>Download anyway</strong> — the file is safe.</div></div>
-  <div class="step"><div class="step-num">3</div><div class="step-text">Open <strong>Downloads</strong> folder and tap <strong>NCC-CRS-v1.2.apk</strong>.</div></div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Tap <strong>Verify Identity to Download</strong> and enter your credentials.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Tap <strong>Download APK</strong>. If browser warns, tap <strong>Download anyway</strong> — safe.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Open <strong>Downloads</strong> and tap <strong>NCC-CRS-v1.2.apk</strong>.</div></div>
   <div class="step"><div class="step-num">4</div><div class="step-text">If asked, go to <strong>Settings → Install unknown apps</strong> and allow your browser.</div></div>
   <div class="step"><div class="step-num">5</div><div class="step-text">If upgrading from v1.1.0, <strong>uninstall the old version first</strong>, then install.</div></div>
-  <div class="step"><div class="step-num">6</div><div class="step-text">Open the app and log in with your NCC CRS credentials.</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Open app and log in with your NCC CRS credentials.</div></div>
 </div>
 
 <!-- ── Footer ── -->
@@ -450,265 +299,309 @@ body {
   <span style="opacity:0.45;font-size:0.5rem;">NCC CRS is an internal unit application. Unauthorized access is prohibited.</span>
 </div>
 
+<!-- ══════════════════════════════════════════════
+     VERIFICATION MODAL
+══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+
+    <!-- Step 1: Verify -->
+    <div class="modal-verify" id="modal-verify">
+      <div class="modal-header">
+        <div class="modal-icon">🪖</div>
+        <div class="modal-title">Identity Verification</div>
+        <div class="modal-sub">Enter your NCC enrollment number and registered name to unlock the download.</div>
+      </div>
+
+      <label class="field-label" for="enrollment">Enrollment Number</label>
+      <input class="modal-input" id="enrollment" type="text"
+        placeholder="e.g. AP/2023/SDA/418617"
+        autocomplete="off" autocorrect="off"
+        autocapitalize="characters" spellcheck="false"
+        onkeydown="if(event.key==='Enter')document.getElementById('name-input').focus()"/>
+
+      <label class="field-label" for="name-input">Full Name</label>
+      <input class="modal-input" id="name-input" type="text"
+        placeholder="e.g. MYPATI NANDA KISHORE"
+        autocomplete="off" autocorrect="off"
+        autocapitalize="words" spellcheck="false"
+        onkeydown="if(event.key==='Enter')handleVerify()"/>
+
+      <div class="msg msg--error" id="msg-error">
+        <span>⚠</span><span id="msg-error-text">Invalid credentials.</span>
+      </div>
+
+      <button class="verify-btn" id="verify-btn" onclick="handleVerify()">
+        <span id="verify-icon">✓</span>
+        <span id="verify-text">Verify & Unlock</span>
+      </button>
+
+      <div class="modal-close-row">
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Welcome + Download -->
+    <div class="modal-welcome" id="modal-welcome">
+      <div class="welcome-badge">✅</div>
+      <div class="welcome-rank" id="welcome-rank">SGT</div>
+      <div class="welcome-name" id="welcome-name">MYPATI NANDA KISHORE</div>
+      <div class="welcome-msg">
+        Identity verified. Welcome to NCC CRS.<br/>
+        Tap below to download the latest version.
+      </div>
+
+      <button class="dl-btn" id="dl-btn" onclick="handleDownload()">
+        <span id="dl-icon">⬇</span>
+        <span id="dl-text">Download NCC CRS v1.2.0</span>
+      </button>
+
+      <div class="modal-close-row" style="margin-top:0.75rem;">
+        <button class="modal-cancel" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // CONFIG
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 const APK_URL = "https://github.com/nccarmy-cmd/ncc-crs-download/releases/download/v1.2.0/NCC-CRS-v1.2.apk";
 
-// Cadet registry — enrollment_no → name (UPPERCASE for comparison)
+// Cadet registry: enrollment → { name, rank }
 const CADETS = {
-  "AP/2023/SDA/418599": "BRAHMADEVI SUBRAMANYAM",
-  "AP/2023/SDA/418600": "DUNNA YOGESH",
-  "AP/2023/SDA/418604": "KALATHURU VASANTH",
-  "AP/2023/SDA/418605": "KAMATHAM NAVEEN",
-  "AP/2023/SDA/418606": "PANABAKA DUSHYANTH",
-  "AP/2023/SDA/418608": "BEJJIPURAM DEVI PRASAD",
-  "AP/2023/SDA/418609": "YAKALA RAJESH",
-  "AP/2023/SDA/418611": "PUSALA MANOHAR",
-  "AP/2023/SDA/418612": "SHAIK FAIZAL",
-  "AP/2023/SDA/418614": "KOGILA NARENDRA",
-  "AP/2023/SDA/418615": "EDURU SHALEM RAJ",
-  "AP/2023/SDA/418617": "MYPATI NANDA KISHORE",
-  "AP/2023/SDA/418618": "VALLAPAREDDY SHUSHMANTH REDDY",
-  "AP/2023/SWA/418619": "SANIKOMMU VENKATA NIKHILA",
-  "AP/2023/SWA/418620": "PATTAN MUZEEFA",
-  "AP/2023/SWA/418622": "SAREDDY SUSHMITHA",
-  "AP/2023/SWA/418623": "GUMMA SIRISHA",
-  "AP/2023/SWA/418624": "GUVVALA SREE LAKSHMI KAVERI",
-  "AP/2023/SWA/418625": "CHEEMALA SOWMYA",
-  "AP/2023/SWA/418626": "DUVVURU SRILAKSHMI",
-  "AP/2023/SWA/418628": "GOTTIPUDI MANJUSHA",
-  "AP/2023/SWA/418630": "KANDLAGUNTA HARIKA",
-  "AP/2023/SWA/418632": "POTLURU NIHARIKA",
-  "AP/2023/SWA/418633": "GUNDAM KALYANI",
-  "AP/2023/SWA418629":  "T GOWRI",
-  "AP2024SDIA0130001": "KINTHALA RAJESH",
-  "AP2024SDIA0130002": "TATIPARTHI YASWANTH BABU",
-  "AP2024SDIA0130003": "SANDI GIREESH",
-  "AP2024SDIA0130004": "GADE GANESH REDDY",
-  "AP2024SDIA0130005": "KATIKALA SAI CHANDRA",
-  "AP2024SDIA0130006": "YETURU.ABHISHEK KUMAR REDDY",
-  "AP2024SDIA0130007": "GUNDALA JASWANTH",
-  "AP2024SDIA0130008": "ANTHATI VENKATESH",
-  "AP2024SDIA0130009": "UPPALAPATI KARTHIKEYA VARMA",
-  "AP2024SDIA0130010": "BALLI PURANDHAR",
-  "AP2024SDIA0130011": "KAGITHAM PUNEETH",
-  "AP2024SDIA0130012": "KURRA RAJENDRA PRASAD",
-  "AP2024SDIA0130013": "KOLLU KRISHNA MURTI",
-  "AP2024SDIA0130014": "SHAIK JEESHAN AHMED",
-  "AP2024SDIA0130015": "MUNAGALA HARI HARA VARA PRASAD",
-  "AP2024SDIA0130016": "NAGAM MANIKANTA",
-  "AP2024SDIA0130017": "PUNAMALLI VENKATAKUMAR",
-  "AP2024SDIA0130018": "PATAN BASHEER KHAN",
-  "AP2024SDIA0130019": "VENKATARAMANAIAH KAKUMURI",
-  "AP2024SDIA0130020": "MADHIRAPALLI NARASIMHA TEJA",
-  "AP2024SDIA0130021": "SONTI SRINIVASULU",
-  "AP2024SDIA0130022": "EERLA SASI SAGAR",
-  "AP2024SDIA0130023": "SALLA GUNASEKHAR",
-  "AP2024SDIA0130024": "SATTA MOHANSAI",
-  "AP2024SDIA0130025": "KANIYAMPATI HEMANTH",
-  "AP2024SDIA0130026": "SODAM SUBHADEEP",
-  "AP2024SDIA0130027": "SAGILI HARSHA VARDHAN REDDY",
-  "AP2024SDIA0130028": "KATTA MUNI SRAVAN",
-  "AP2024SDIA0130029": "PEMIREDDY PRAVEEN KUMAR REDDY",
-  "AP2024SDIA0130030": "KONDURU KUNDHAN PRAKASH",
-  "AP2024SDIA0130031": "CHALLA SURENDRA",
-  "AP2024SDIA0130054": "PRABHALAVEEDU JAGADEESWAR REDDY",
-  "AP2024SWIA0130032": "CHITLURU VEERA PADMA LAASYA",
-  "AP2024SWIA0130033": "TUPAKULA SARIKA",
-  "AP2024SWIA0130034": "PAMANJI LAHARI",
-  "AP2024SWIA0130035": "PALLAPOTHULA POOJITHA",
-  "AP2024SWIA0130036": "MANUBOLU JYOTHI",
-  "AP2024SWIA0130037": "NALLAGARI SREEJA",
-  "AP2024SWIA0130038": "THIRUNAMALLI RUPARANI",
-  "AP2024SWIA0130039": "KOMMALA BHAVYA",
-  "AP2024SWIA0130040": "MUTHYAM LATHA SRI",
-  "AP2024SWIA0130041": "ADDANKI LAKSHMI KUMARI",
-  "AP2024SWIA0130042": "BOGADAPATI PRIYA HASINI",
-  "AP2024SWIA0130043": "EDUGUNDLA UDAYALAKSHMI",
-  "AP2024SWIA0130044": "CHENNAVARAM DIVYA",
-  "AP2024SWIA0130045": "PULIPATI MANASA",
-  "AP2024SWIA0130046": "P YUVA SREE",
-  "AP2024SWIA0130047": "AVULA HARSHITHA",
-  "AP2024SWIA0130048": "PATTEM SWETHA",
-  "AP2024SWIA0130049": "MANDI KEERTHI",
-  "AP2024SWIA0130050": "KANNA HARIKA",
-  "AP2024SWIA0130051": "SURTHANI DEVI SAICHARITHA",
-  "AP2024SWIA0130052": "GOVINDU LASYA PRIYA",
-  "AP2024SWIA0130053": "MURAM CHARITHA",
-  "AP2025SDIA0130050": "ANNEM NIVAS",
-  "AP2025SDIA0130051": "LEKKALA AVINASH",
-  "AP2025SDIA0130052": "VEMIREDDY LOKESH REDDY",
-  "AP2025SDIA0130053": "POKALA HARISH REDDY",
-  "AP2025SDIA0130054": "DAKSHINAPU VENKATA NAVEEN",
-  "AP2025SDIA0130055": "JOGI KISHAN REDDY",
-  "AP2025SDIA0130056": "NATAKARANI SRIHARI",
-  "AP2025SDIA0130057": "DHARMANA VAMSI",
-  "AP2025SDIA0130058": "GUDIGUNTA DIDI SANTH",
-  "AP2025SDIA0130059": "MARRIPUDI MIDHIL",
-  "AP2025SDIA0130060": "SHAIK SUFIYAN",
-  "AP2025SDIA0130085": "GANJI PAVAN KALYAN",
-  "AP2025SWIA0130061": "SHAIK PARHEENA",
-  "AP2025SWIA0130062": "KOMMADDI PAVITHRA",
-  "AP2025SWIA0130063": "NASANA BHUVANA KRUTHI",
-  "AP2025SWIA0130064": "CHEREDDY HARSHINI",
-  "AP2025SWIA0130065": "VEDICHERLA CHATHURYA",
-  "AP2025SWIA0130066": "SEELA JEEVITHA LAKSHMI",
-  "AP2025SWIA0130067": "KONDETI SUSMITHA",
-  "AP2025SWIA0130068": "TAMMANA PRAVALLIKA",
-  "AP2025SWIA0130069": "NALLAGARI SWARUPA",
-  "AP2025SWIA0130070": "CHALLA JAHNAVI",
-  "AP2025SWIA0130071": "LEPAKSHI SHIREEN BANO",
-  "AP2025SWIA0130072": "VANTERU AMRUTHA",
-  "AP2025SWIA0130086": "THERUVAYI SHALINI",
+  "AP/2023/SDA/418599":{"name":"BRAHMADEVI SUBRAMANYAM","rank":"CPL"},
+  "AP/2023/SDA/418600":{"name":"DUNNA YOGESH","rank":"SGT"},
+  "AP/2023/SDA/418604":{"name":"KALATHURU VASANTH","rank":"CPL"},
+  "AP/2023/SDA/418605":{"name":"KAMATHAM NAVEEN","rank":"LCPL"},
+  "AP/2023/SDA/418606":{"name":"PANABAKA DUSHYANTH","rank":"CQMS"},
+  "AP/2023/SDA/418608":{"name":"BEJJIPURAM DEVI PRASAD","rank":"SGT"},
+  "AP/2023/SDA/418609":{"name":"YAKALA RAJESH","rank":"LCPL"},
+  "AP/2023/SDA/418611":{"name":"PUSALA MANOHAR","rank":"SUO"},
+  "AP/2023/SDA/418612":{"name":"SHAIK FAIZAL","rank":"CPL"},
+  "AP/2023/SDA/418614":{"name":"KOGILA NARENDRA","rank":"CPL"},
+  "AP/2023/SDA/418615":{"name":"EDURU SHALEM RAJ","rank":"SGT"},
+  "AP/2023/SDA/418617":{"name":"MYPATI NANDA KISHORE","rank":"SGT"},
+  "AP/2023/SDA/418618":{"name":"VALLAPAREDDY SHUSHMANTH REDDY","rank":"CPL"},
+  "AP/2023/SWA/418619":{"name":"SANIKOMMU VENKATA NIKHILA","rank":"CPL"},
+  "AP/2023/SWA/418620":{"name":"PATTAN MUZEEFA","rank":"LCPL"},
+  "AP/2023/SWA/418622":{"name":"SAREDDY SUSHMITHA","rank":"CPL"},
+  "AP/2023/SWA/418623":{"name":"GUMMA SIRISHA","rank":"CDT"},
+  "AP/2023/SWA/418624":{"name":"GUVVALA SREE LAKSHMI KAVERI","rank":"CDT"},
+  "AP/2023/SWA/418625":{"name":"CHEEMALA SOWMYA","rank":"SGT"},
+  "AP/2023/SWA/418626":{"name":"DUVVURU SRILAKSHMI","rank":"CDT"},
+  "AP/2023/SWA/418628":{"name":"GOTTIPUDI MANJUSHA","rank":"LCPL"},
+  "AP/2023/SWA/418630":{"name":"KANDLAGUNTA HARIKA","rank":"CDT"},
+  "AP/2023/SWA/418632":{"name":"POTLURU NIHARIKA","rank":"CPL"},
+  "AP/2023/SWA/418633":{"name":"GUNDAM KALYANI","rank":"LCPL"},
+  "AP/2023/SWA418629": {"name":"T GOWRI","rank":"CPL"},
+  "AP2024SDIA0130001":{"name":"KINTHALA RAJESH","rank":"CDT"},
+  "AP2024SDIA0130002":{"name":"TATIPARTHI YASWANTH BABU","rank":"CDT"},
+  "AP2024SDIA0130003":{"name":"SANDI GIREESH","rank":"CDT"},
+  "AP2024SDIA0130004":{"name":"GADE GANESH REDDY","rank":"CDT"},
+  "AP2024SDIA0130005":{"name":"KATIKALA SAI CHANDRA","rank":"CDT"},
+  "AP2024SDIA0130006":{"name":"YETURU.ABHISHEK KUMAR REDDY","rank":"CDT"},
+  "AP2024SDIA0130007":{"name":"GUNDALA JASWANTH","rank":"CDT"},
+  "AP2024SDIA0130008":{"name":"ANTHATI VENKATESH","rank":"LCPL"},
+  "AP2024SDIA0130009":{"name":"UPPALAPATI KARTHIKEYA VARMA","rank":"CDT"},
+  "AP2024SDIA0130010":{"name":"BALLI PURANDHAR","rank":"CDT"},
+  "AP2024SDIA0130011":{"name":"KAGITHAM PUNEETH","rank":"CDT"},
+  "AP2024SDIA0130012":{"name":"KURRA RAJENDRA PRASAD","rank":"CDT"},
+  "AP2024SDIA0130013":{"name":"KOLLU KRISHNA MURTI","rank":"LCPL"},
+  "AP2024SDIA0130014":{"name":"SHAIK JEESHAN AHMED","rank":"CDT"},
+  "AP2024SDIA0130015":{"name":"MUNAGALA HARI HARA VARA PRASAD","rank":"CDT"},
+  "AP2024SDIA0130016":{"name":"NAGAM MANIKANTA","rank":"CDT"},
+  "AP2024SDIA0130017":{"name":"PUNAMALLI VENKATAKUMAR","rank":"CDT"},
+  "AP2024SDIA0130018":{"name":"PATAN BASHEER KHAN","rank":"LCPL"},
+  "AP2024SDIA0130019":{"name":"VENKATARAMANAIAH KAKUMURI","rank":"CDT"},
+  "AP2024SDIA0130020":{"name":"MADHIRAPALLI NARASIMHA TEJA","rank":"LCPL"},
+  "AP2024SDIA0130021":{"name":"SONTI SRINIVASULU","rank":"CDT"},
+  "AP2024SDIA0130022":{"name":"EERLA SASI SAGAR","rank":"CDT"},
+  "AP2024SDIA0130023":{"name":"SALLA GUNASEKHAR","rank":"CDT"},
+  "AP2024SDIA0130024":{"name":"SATTA MOHANSAI","rank":"CDT"},
+  "AP2024SDIA0130025":{"name":"KANIYAMPATI HEMANTH","rank":"CDT"},
+  "AP2024SDIA0130026":{"name":"SODAM SUBHADEEP","rank":"CDT"},
+  "AP2024SDIA0130027":{"name":"SAGILI HARSHA VARDHAN REDDY","rank":"CDT"},
+  "AP2024SDIA0130028":{"name":"KATTA MUNI SRAVAN","rank":"CDT"},
+  "AP2024SDIA0130029":{"name":"PEMIREDDY PRAVEEN KUMAR REDDY","rank":"CDT"},
+  "AP2024SDIA0130030":{"name":"KONDURU KUNDHAN PRAKASH","rank":"CDT"},
+  "AP2024SDIA0130031":{"name":"CHALLA SURENDRA","rank":"CDT"},
+  "AP2024SDIA0130054":{"name":"PRABHALAVEEDU JAGADEESWAR REDDY","rank":"CDT"},
+  "AP2024SWIA0130032":{"name":"CHITLURU VEERA PADMA LAASYA","rank":"CDT"},
+  "AP2024SWIA0130033":{"name":"TUPAKULA SARIKA","rank":"CDT"},
+  "AP2024SWIA0130034":{"name":"PAMANJI LAHARI","rank":"CDT"},
+  "AP2024SWIA0130035":{"name":"PALLAPOTHULA POOJITHA","rank":"CDT"},
+  "AP2024SWIA0130036":{"name":"MANUBOLU JYOTHI","rank":"CDT"},
+  "AP2024SWIA0130037":{"name":"NALLAGARI SREEJA","rank":"CDT"},
+  "AP2024SWIA0130038":{"name":"THIRUNAMALLI RUPARANI","rank":"CDT"},
+  "AP2024SWIA0130039":{"name":"KOMMALA BHAVYA","rank":"CDT"},
+  "AP2024SWIA0130040":{"name":"MUTHYAM LATHA SRI","rank":"CDT"},
+  "AP2024SWIA0130041":{"name":"ADDANKI LAKSHMI KUMARI","rank":"CDT"},
+  "AP2024SWIA0130042":{"name":"BOGADAPATI PRIYA HASINI","rank":"CDT"},
+  "AP2024SWIA0130043":{"name":"EDUGUNDLA UDAYALAKSHMI","rank":"CDT"},
+  "AP2024SWIA0130044":{"name":"CHENNAVARAM DIVYA","rank":"CDT"},
+  "AP2024SWIA0130045":{"name":"PULIPATI MANASA","rank":"CDT"},
+  "AP2024SWIA0130046":{"name":"P YUVA SREE","rank":"CDT"},
+  "AP2024SWIA0130047":{"name":"AVULA HARSHITHA","rank":"CDT"},
+  "AP2024SWIA0130048":{"name":"PATTEM SWETHA","rank":"CDT"},
+  "AP2024SWIA0130049":{"name":"MANDI KEERTHI","rank":"CDT"},
+  "AP2024SWIA0130050":{"name":"KANNA HARIKA","rank":"CDT"},
+  "AP2024SWIA0130051":{"name":"SURTHANI DEVI SAICHARITHA","rank":"LCPL"},
+  "AP2024SWIA0130052":{"name":"GOVINDU LASYA PRIYA","rank":"LCPL"},
+  "AP2024SWIA0130053":{"name":"MURAM CHARITHA","rank":"LCPL"},
+  "AP2025SDIA0130050":{"name":"ANNEM NIVAS","rank":"CDT"},
+  "AP2025SDIA0130051":{"name":"LEKKALA AVINASH","rank":"CDT"},
+  "AP2025SDIA0130052":{"name":"VEMIREDDY LOKESH REDDY","rank":"CDT"},
+  "AP2025SDIA0130053":{"name":"POKALA HARISH REDDY","rank":"CDT"},
+  "AP2025SDIA0130054":{"name":"DAKSHINAPU VENKATA NAVEEN","rank":"CDT"},
+  "AP2025SDIA0130055":{"name":"JOGI KISHAN REDDY","rank":"CDT"},
+  "AP2025SDIA0130056":{"name":"NATAKARANI SRIHARI","rank":"CDT"},
+  "AP2025SDIA0130057":{"name":"DHARMANA VAMSI","rank":"CDT"},
+  "AP2025SDIA0130058":{"name":"GUDIGUNTA DIDI SANTH","rank":"CDT"},
+  "AP2025SDIA0130059":{"name":"MARRIPUDI MIDHIL","rank":"CDT"},
+  "AP2025SDIA0130060":{"name":"SHAIK SUFIYAN","rank":"CDT"},
+  "AP2025SDIA0130085":{"name":"GANJI PAVAN KALYAN","rank":"CDT"},
+  "AP2025SWIA0130061":{"name":"SHAIK PARHEENA","rank":"CDT"},
+  "AP2025SWIA0130062":{"name":"KOMMADDI PAVITHRA","rank":"CDT"},
+  "AP2025SWIA0130063":{"name":"NASANA BHUVANA KRUTHI","rank":"CDT"},
+  "AP2025SWIA0130064":{"name":"CHEREDDY HARSHINI","rank":"CDT"},
+  "AP2025SWIA0130065":{"name":"VEDICHERLA CHATHURYA","rank":"CDT"},
+  "AP2025SWIA0130066":{"name":"SEELA JEEVITHA LAKSHMI","rank":"CDT"},
+  "AP2025SWIA0130067":{"name":"KONDETI SUSMITHA","rank":"CDT"},
+  "AP2025SWIA0130068":{"name":"TAMMANA PRAVALLIKA","rank":"CDT"},
+  "AP2025SWIA0130069":{"name":"NALLAGARI SWARUPA","rank":"CDT"},
+  "AP2025SWIA0130070":{"name":"CHALLA JAHNAVI","rank":"CDT"},
+  "AP2025SWIA0130071":{"name":"LEPAKSHI SHIREEN BANO","rank":"CDT"},
+  "AP2025SWIA0130072":{"name":"VANTERU AMRUTHA","rank":"CDT"},
+  "AP2025SWIA0130086":{"name":"THERUVAYI SHALINI","rank":"CDT"},
 };
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // THEME
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 function setTheme(t) {
-  const resolved = t === 'device'
-    ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-    : t;
+  const resolved = t==='device'
+    ? (window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark') : t;
   document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem('ncc_theme', t);
-  ['light','dark','device'].forEach(id => {
-    document.getElementById('btn-'+id).classList.toggle('active', id === t);
-  });
+  ['light','dark','device'].forEach(id =>
+    document.getElementById('btn-'+id).classList.toggle('active', id===t)
+  );
 }
-// Apply saved theme on load
-(function(){
-  const saved = localStorage.getItem('ncc_theme') || 'device';
-  setTheme(saved);
-})();
+(function(){ setTheme(localStorage.getItem('ncc_theme')||'device'); })();
 
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════
-
-// Normalize enrollment: uppercase, remove spaces
-function normalizeEnrollment(raw) {
-  return raw.trim().toUpperCase().replace(/\s+/g, '');
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('enrollment').value = '';
+  document.getElementById('name-input').value = '';
+  document.getElementById('msg-error').classList.remove('show');
+  showVerifyStep();
+  setTimeout(()=>document.getElementById('enrollment').focus(), 250);
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function showVerifyStep() {
+  document.getElementById('modal-verify').style.display = 'block';
+  document.getElementById('modal-welcome').style.display = 'none';
+}
+function showWelcomeStep(cadet) {
+  document.getElementById('modal-verify').style.display = 'none';
+  document.getElementById('modal-welcome').style.display = 'block';
+  document.getElementById('welcome-rank').textContent = cadet.rank;
+  document.getElementById('welcome-name').textContent = cadet.name;
+  // Reset download button
+  document.getElementById('dl-btn').disabled = false;
+  document.getElementById('dl-icon').textContent = '⬇';
+  document.getElementById('dl-text').textContent = 'Download NCC CRS v1.2.0';
 }
 
-// Look up enrollment — tries exact match first, then slash-stripped match
+// ═══════════════════════════════════════════════════════════
+// LOOKUP HELPERS
+// ═══════════════════════════════════════════════════════════
 function lookupEnrollment(raw) {
-  const upper = normalizeEnrollment(raw);
-  if (CADETS[upper]) return { key: upper, name: CADETS[upper] };
-  // Try without slashes
-  const noSlash = upper.replace(/\//g, '');
-  for (const [k, v] of Object.entries(CADETS)) {
-    if (k.replace(/\//g, '') === noSlash) return { key: k, name: v };
+  const upper = raw.trim().toUpperCase().replace(/\s+/g,'');
+  if (CADETS[upper]) return { key:upper, ...CADETS[upper] };
+  const noSlash = upper.replace(/\//g,'');
+  for (const [k,v] of Object.entries(CADETS)) {
+    if (k.replace(/\//g,'') === noSlash) return { key:k, ...v };
   }
   return null;
 }
-
-// Fuzzy name match — allows minor typos, partial matches
-// Returns true if typed name is close enough to registered name
 function nameMatches(typed, registered) {
-  const t = typed.trim().toUpperCase().replace(/\s+/g, ' ');
-  const r = registered.trim().toUpperCase().replace(/\s+/g, ' ');
+  const t = typed.trim().toUpperCase().replace(/\s+/g,' ');
+  const r = registered.trim().toUpperCase().replace(/\s+/g,' ');
   if (t === r) return true;
-  // Check if all typed words appear in registered name
-  const typedWords = t.split(' ').filter(Boolean);
-  const regWords   = r.split(' ');
-  // All typed words must match at least one registered word (startsWith)
-  return typedWords.length >= 2 && typedWords.every(tw =>
-    regWords.some(rw => rw.startsWith(tw) || tw.startsWith(rw))
-  );
+  const tw = t.split(' ').filter(Boolean);
+  const rw = r.split(' ');
+  return tw.length >= 2 && tw.every(w => rw.some(rw => rw.startsWith(w)||w.startsWith(rw)));
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════════════════
-let foundCadet = null; // { key, name } when enrollment matched
-
-// ═══════════════════════════════════════════════════════════════════════════
-// ENROLLMENT INPUT HANDLER
-// ═══════════════════════════════════════════════════════════════════════════
-function onEnrollmentInput() {
-  const raw = document.getElementById('enrollment').value;
-  hideAll();
-  foundCadet = null;
-
-  const result = lookupEnrollment(raw);
-
-  if (!result) {
-    // Nothing found yet — just update button state
-    document.getElementById('gate-name').style.display = 'none';
-    document.getElementById('name-suggestion').classList.remove('show');
-    updateBtn('locked', '🔒', 'Enter Enrollment Number');
-    return;
-  }
-
-  // Found — show name hint and name field
-  foundCadet = result;
-  document.getElementById('name-suggestion-text').textContent =
-    'Found: ' + result.name;
-  document.getElementById('name-suggestion').classList.add('show');
-  document.getElementById('gate-name').style.display = 'block';
-  document.getElementById('name-input').value = '';
-  document.getElementById('name-input').focus();
-  updateBtn('ready', '⬇', 'Confirm Name to Download');
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// NAME INPUT HANDLER
-// ═══════════════════════════════════════════════════════════════════════════
-function onNameInput() {
-  hideAll();
-  const typed = document.getElementById('name-input').value;
-  if (!foundCadet || !typed.trim()) {
-    updateBtn('ready', '⬇', 'Confirm Name to Download');
-    return;
-  }
-  if (nameMatches(typed, foundCadet.name)) {
-    updateBtn('go', '⬇', 'Download APK — v1.2.0');
-  } else {
-    updateBtn('ready', '⬇', 'Confirm Name to Download');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// DOWNLOAD HANDLER
-// ═══════════════════════════════════════════════════════════════════════════
-function handleDownload() {
-  hideAll();
-
+// ═══════════════════════════════════════════════════════════
+// VERIFY HANDLER
+// ═══════════════════════════════════════════════════════════
+function handleVerify() {
   const enrollVal = document.getElementById('enrollment').value;
   const nameVal   = document.getElementById('name-input').value;
+  const errEl     = document.getElementById('msg-error');
+  const errTxt    = document.getElementById('msg-error-text');
+  const btn       = document.getElementById('verify-btn');
+  errEl.classList.remove('show');
 
   if (!enrollVal.trim()) {
-    showError('Please enter your enrollment number.');
-    return;
-  }
-
-  const result = lookupEnrollment(enrollVal);
-  if (!result) {
-    showError('Enrollment number not found. Check spelling or contact your ANO.');
+    errTxt.textContent = 'Please enter your enrollment number.';
+    errEl.classList.add('show');
     document.getElementById('enrollment').focus();
     return;
   }
-
+  const result = lookupEnrollment(enrollVal);
+  if (!result) {
+    errTxt.textContent = 'Enrollment number not found. Check spelling or contact ANO.';
+    errEl.classList.add('show');
+    document.getElementById('enrollment').focus();
+    return;
+  }
   if (!nameVal.trim()) {
-    showWarn('Please enter your name to confirm identity.');
+    errTxt.textContent = 'Please enter your registered name.';
+    errEl.classList.add('show');
     document.getElementById('name-input').focus();
     return;
   }
-
   if (!nameMatches(nameVal, result.name)) {
-    showError('Name does not match our records for this enrollment number. Try your full registered name.');
+    errTxt.textContent = 'Name does not match. Use your full name as registered in NCC CRS.';
+    errEl.classList.add('show');
     document.getElementById('name-input').focus();
     return;
   }
 
-  // ── Verified ──
-  showOk();
-  updateBtn('loading', '', '');
-  document.getElementById('btn-icon').innerHTML = '<div class="spinner"></div>';
-  document.getElementById('btn-text').textContent = 'Starting download…';
-  document.getElementById('dl-btn').disabled = true;
+  // ── Verified — show welcome ──
+  btn.disabled = true;
+  document.getElementById('verify-icon').innerHTML = '<div class="spinner" style="border-top-color:white;border-color:rgba(255,255,255,0.3);"></div>';
+  document.getElementById('verify-text').textContent = 'Verifying…';
+  setTimeout(() => {
+    btn.disabled = false;
+    document.getElementById('verify-icon').textContent = '✓';
+    document.getElementById('verify-text').textContent = 'Verify & Unlock';
+    showWelcomeStep(result);
+  }, 700);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DOWNLOAD HANDLER
+// ═══════════════════════════════════════════════════════════
+function handleDownload() {
+  const btn = document.getElementById('dl-btn');
+  btn.disabled = true;
+  document.getElementById('dl-icon').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('dl-text').textContent = 'Starting download…';
 
   setTimeout(() => {
     const a = document.createElement('a');
@@ -717,47 +610,16 @@ function handleDownload() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
     setTimeout(() => {
-      document.getElementById('dl-btn').disabled = false;
-      updateBtn('go', '⬇', 'Download Again');
-    }, 3000);
-  }, 900);
+      btn.disabled = false;
+      document.getElementById('dl-icon').textContent = '✓';
+      document.getElementById('dl-text').textContent = 'Download Started — Check Downloads';
+    }, 1500);
+  }, 600);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// UI HELPERS
-// ═══════════════════════════════════════════════════════════════════════════
-function updateBtn(state, icon, text) {
-  const btn  = document.getElementById('dl-btn');
-  const ico  = document.getElementById('btn-icon');
-  const txt  = document.getElementById('btn-text');
-  btn.disabled = false;
-  if (state === 'locked') {
-    btn.className = 'dl-btn dl-btn--locked';
-  } else {
-    btn.className = 'dl-btn';
-  }
-  ico.textContent = icon;
-  txt.textContent = text;
-}
-
-function showError(msg) {
-  document.getElementById('msg-error-text').textContent = msg;
-  document.getElementById('msg-error').classList.add('show');
-}
-function showWarn(msg) {
-  document.getElementById('msg-warn-text').textContent = msg;
-  document.getElementById('msg-warn').classList.add('show');
-}
-function showOk() {
-  document.getElementById('msg-ok').classList.add('show');
-}
-function hideAll() {
-  ['msg-error','msg-warn','msg-ok'].forEach(id =>
-    document.getElementById(id).classList.remove('show')
-  );
-}
+// Close modal on Escape key
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 </script>
 </body>
 </html>
