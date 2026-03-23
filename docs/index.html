@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NCC CRS — Download App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #060b18;
+    --card:      #0d1425;
+    --border:    rgba(99,102,241,0.18);
+    --indigo:    #4f46e5;
+    --indigo-l:  #818cf8;
+    --green:     #34d399;
+    --amber:     #fbbf24;
+    --red:       #f87171;
+    --text:      #e2e8f0;
+    --muted:     #64748b;
+    --sub:       #94a3b8;
+    --mono:      'JetBrains Mono', monospace;
+    --syne:      'Syne', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fade-in 0.5s ease both;
+  }
+  .unit-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--indigo-l);
+    background: rgba(79,70,229,0.12);
+    border: 1px solid rgba(79,70,229,0.25);
+    padding: 0.3rem 0.85rem;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+  }
+  .title {
+    font-family: var(--syne);
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .title span { color: var(--indigo-l); }
+  .subtitle {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 440px;
+    animation: fade-in 0.5s ease 0.1s both;
+  }
+
+  /* ── Version info ── */
+  .version-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .version-tag {
+    font-family: var(--syne);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .version-meta {
+    text-align: right;
+    font-size: 0.6rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 0.12rem 0.5rem;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: var(--green);
+    margin-left: 0.5rem;
+  }
+
+  /* ── Changelog ── */
+  .changelog {
+    margin-bottom: 1.5rem;
+  }
+  .cl-title {
+    font-size: 0.58rem;
+    color: var(--indigo-l);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.65rem;
+  }
+  .cl-item {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--sub);
+    line-height: 1.6;
+    padding: 0.2rem 0;
+  }
+  .cl-item::before {
+    content: '→';
+    color: var(--indigo-l);
+    flex-shrink: 0;
+  }
+
+  /* ── Gate form ── */
+  .gate { margin-bottom: 1.25rem; }
+  .gate-label {
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .gate-input {
+    width: 100%;
+    background: rgba(15,23,42,0.8);
+    border: 1px solid rgba(99,102,241,0.25);
+    color: var(--text);
+    border-radius: 0.55rem;
+    padding: 0.65rem 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .gate-input:focus {
+    border-color: var(--indigo-l);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+  }
+  .gate-input::placeholder { color: var(--muted); opacity: 0.6; }
+  .gate-hint {
+    font-size: 0.58rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    opacity: 0.7;
+  }
+
+  /* ── Messages ── */
+  .msg {
+    font-size: 0.68rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.45rem;
+    margin-bottom: 0.75rem;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .msg--error {
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.3);
+    color: var(--red);
+  }
+  .msg--ok {
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--green);
+  }
+  .msg.show { display: flex; }
+
+  /* ── Download button ── */
+  .dl-btn {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--indigo);
+    border: none;
+    border-radius: 0.65rem;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .dl-btn:hover:not(:disabled) {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(79,70,229,0.35);
+  }
+  .dl-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .dl-btn--locked { background: rgba(79,70,229,0.25); }
+
+  /* ── Spinner ── */
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* ── File info ── */
+  .file-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .fi-item { font-size: 0.58rem; color: var(--muted); line-height: 1.6; }
+  .fi-val  { color: var(--sub); font-weight: 600; }
+
+  /* ── Install guide ── */
+  .guide {
+    margin-top: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+    max-width: 440px;
+    animation: fade-in 0.5s ease 0.2s both;
+  }
+  .guide-title {
+    font-size: 0.6rem;
+    color: var(--indigo-l);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.85rem;
+  }
+  .step {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.45rem 0;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(79,70,229,0.15);
+    border: 1px solid rgba(79,70,229,0.3);
+    color: var(--indigo-l);
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .step-text { font-size: 0.7rem; color: var(--sub); line-height: 1.6; }
+  .step-text strong { color: var(--text); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.58rem;
+    color: var(--muted);
+    line-height: 1.8;
+    animation: fade-in 0.5s ease 0.3s both;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="unit-badge">2(A) EME Unit NCC — NBKRIST Vidyanagar</div>
+  <h1 class="title">NCC <span>CRS</span></h1>
+  <p class="subtitle">Cadets Records System · Official Download Portal</p>
+</div>
+
+<!-- ── Download Card ── -->
+<div class="card">
+
+  <!-- Version info -->
+  <div class="version-row">
+    <div>
+      <div class="version-tag">v1.2.0 <span class="badge">Latest</span></div>
+      <div style="font-size:0.6rem;color:var(--muted);margin-top:0.2rem;">Released 23 Mar 2026</div>
+    </div>
+    <div class="version-meta">
+      Android 8.0+<br/>
+      3.47 MB
+    </div>
+  </div>
+
+  <!-- Changelog -->
+  <div class="changelog">
+    <p class="cl-title">What's New</p>
+    <div class="cl-item">QR code fixes — invitation card + payment QR side by side</div>
+    <div class="cl-item">Cat×Div specific payment QR for each cadet</div>
+    <div class="cl-item">Events tab rendering fixed — no more blank screen</div>
+    <div class="cl-item">ANO review plan tab now loads correctly</div>
+    <div class="cl-item">Invitation card layout improvements</div>
+  </div>
+
+  <!-- Enrollment gate -->
+  <div class="gate">
+    <label class="gate-label" for="enrollment">Your Enrollment Number</label>
+    <input
+      class="gate-input"
+      id="enrollment"
+      type="text"
+      placeholder="e.g. AP/2023/SDA/418617"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="characters"
+      spellcheck="false"
+    />
+    <p class="gate-hint">Enter your NCC enrollment number to unlock the download.</p>
+  </div>
+
+  <!-- Error / success messages -->
+  <div class="msg msg--error" id="msg-error">
+    <span>⚠</span><span id="msg-error-text">Invalid enrollment number.</span>
+  </div>
+  <div class="msg msg--ok" id="msg-ok">
+    <span>✓</span><span>Enrollment verified. Your download is starting…</span>
+  </div>
+
+  <!-- Download button -->
+  <button class="dl-btn dl-btn--locked" id="dl-btn" onclick="handleDownload()">
+    <span id="btn-icon">🔒</span>
+    <span id="btn-text">Enter Enrollment to Download</span>
+  </button>
+
+  <!-- File info -->
+  <div class="file-info">
+    <div class="fi-item">Format<br/><span class="fi-val">.apk (Android)</span></div>
+    <div class="fi-item">Version<br/><span class="fi-val">1.2.0</span></div>
+    <div class="fi-item">Min Android<br/><span class="fi-val">8.0 (Oreo)</span></div>
+    <div class="fi-item">Size<br/><span class="fi-val">3.47 MB</span></div>
+  </div>
+</div>
+
+<!-- ── Install Guide ── -->
+<div class="guide">
+  <p class="guide-title">📱 Installation Guide</p>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text">Enter your enrollment number above and tap <strong>Download APK</strong>.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text">When prompted, tap <strong>Download anyway</strong> — the file is safe.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text">Open your <strong>Downloads</strong> folder and tap <strong>NCC-CRS-v1.2.apk</strong>.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-text">If asked, go to <strong>Settings → Install unknown apps</strong> and allow your browser/file manager.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-text">Tap <strong>Install</strong>. If upgrading from v1.1.0, uninstall the old version first.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-text">Open the app and log in with your NCC CRS credentials.</div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  2(A) EME Unit NCC · NBKRIST Vidyanagar<br/>
+  For support contact your Unit ANO or Senior Cadet<br/>
+  <span style="opacity:0.5;font-size:0.52rem;">NCC CRS is an internal unit application. Unauthorized access is prohibited.</span>
+</div>
+
+<script>
+// ── Configuration ────────────────────────────────────────────────────────────
+// APK direct download URL from GitHub Releases
+const APK_URL = "https://github.com/nccarmy-cmd/ncc-crs-download/releases/download/v1.2.0/NCC-CRS-v1.2.apk";
+// Valid enrollment numbers — add all 104 cadets here
+// Format: uppercase, slashes included exactly as in DB
+const VALID_ENROLLMENTS = new Set([
+  // ── Category C · SD ──
+  "AP/2023/SDA/418617", // SGT MYPATI NANDA KISHORE
+  "AP/2023/SDA/418608",
+  "AP/2023/SDA/418599",
+  "AP/2023/SDA/418600",
+  "AP/2023/SDA/418612",
+  "AP/2023/SDA/418609",
+  "AP/2023/SDA/418604",
+  "AP/2023/SDA/418605",
+  "AP/2023/SDA/418606",
+  "AP/2023/SDA/418611",
+  "AP/2023/SDA/418618",
+  "AP/2023/SDA/418614",
+  "AP/2023/SDA/418615",
+  // ── Category C · SW ──
+  "AP/2023/SWA/418628",
+  "AP/2023/SWA/418633",
+  "AP/2023/SWA/418619",
+  "AP/2023/SWA418629",   // note: no slash before 418629 — matches DB
+  "AP/2023/SWA/418620",
+  "AP/2023/SWA/418632",
+  "AP/2023/SWA/418622",
+  "AP/2023/SWA/418625",
+  // ── Category B · SD (batch 2024) ──
+  "AP2024SDIA0130001","AP2024SDIA0130002","AP2024SDIA0130003",
+  "AP2024SDIA0130004","AP2024SDIA0130005","AP2024SDIA0130006",
+  "AP2024SDIA0130007","AP2024SDIA0130008","AP2024SDIA0130009",
+  "AP2024SDIA0130010","AP2024SDIA0130011","AP2024SDIA0130012",
+  "AP2024SDIA0130013","AP2024SDIA0130014","AP2024SDIA0130015",
+  "AP2024SDIA0130016","AP2024SDIA0130017","AP2024SDIA0130018",
+  "AP2024SDIA0130019","AP2024SDIA0130020","AP2024SDIA0130021",
+  "AP2024SDIA0130022","AP2024SDIA0130023","AP2024SDIA0130024",
+  "AP2024SDIA0130025","AP2024SDIA0130026","AP2024SDIA0130027",
+  "AP2024SDIA0130028","AP2024SDIA0130029","AP2024SDIA0130030",
+  "AP2024SDIA0130031","AP2024SDIA0130054",
+  // ── Category B · SW (batch 2024) ──
+  "AP2024SWIA0130032","AP2024SWIA0130033","AP2024SWIA0130034",
+  "AP2024SWIA0130035","AP2024SWIA0130036","AP2024SWIA0130037",
+  "AP2024SWIA0130038","AP2024SWIA0130039","AP2024SWIA0130040",
+  "AP2024SWIA0130041","AP2024SWIA0130042","AP2024SWIA0130043",
+  "AP2024SWIA0130044","AP2024SWIA0130045","AP2024SWIA0130046",
+  "AP2024SWIA0130047","AP2024SWIA0130048","AP2024SWIA0130049",
+  "AP2024SWIA0130050","AP2024SWIA0130051","AP2024SWIA0130052",
+  "AP2024SWIA0130053",
+  // ── Category A · SD (batch 2025) ──
+  "AP2025SDIA0130050","AP2025SDIA0130051","AP2025SDIA0130052",
+  "AP2025SDIA0130053","AP2025SDIA0130054","AP2025SDIA0130055",
+  "AP2025SDIA0130056","AP2025SDIA0130057","AP2025SDIA0130058",
+  "AP2025SDIA0130059","AP2025SDIA0130060","AP2025SDIA0130085",
+  // ── Category A · SW (batch 2025) ──
+  "AP2025SWIA0130061","AP2025SWIA0130062","AP2025SWIA0130063",
+  "AP2025SWIA0130064","AP2025SWIA0130065","AP2025SWIA0130066",
+  "AP2025SWIA0130067","AP2025SWIA0130068","AP2025SWIA0130069",
+  "AP2025SWIA0130070","AP2025SWIA0130071","AP2025SWIA0130072",
+  "AP2025SWIA0130086",
+]);
+
+// ── Input handler — update button state live ─────────────────────────────────
+document.getElementById("enrollment").addEventListener("input", function() {
+  const val = this.value.trim().toUpperCase();
+  const btn  = document.getElementById("dl-btn");
+  const icon = document.getElementById("btn-icon");
+  const text = document.getElementById("btn-text");
+
+  hideMessages();
+
+  if (val.length === 0) {
+    btn.disabled = false;
+    btn.className = "dl-btn dl-btn--locked";
+    icon.textContent = "🔒";
+    text.textContent = "Enter Enrollment to Download";
+  } else {
+    btn.disabled = false;
+    btn.className = "dl-btn";
+    icon.textContent = "⬇";
+    text.textContent = "Download APK — v1.2.0";
+  }
+});
+
+// ── Download handler ──────────────────────────────────────────────────────────
+function handleDownload() {
+  const raw = document.getElementById("enrollment").value.trim().toUpperCase();
+  const btn  = document.getElementById("dl-btn");
+  const icon = document.getElementById("btn-icon");
+  const text = document.getElementById("btn-text");
+
+  hideMessages();
+
+  if (!raw) {
+    showError("Please enter your enrollment number.");
+    return;
+  }
+
+  // Normalize: remove spaces, accept with or without slashes
+  // Try exact match first, then normalized (no slashes, no spaces)
+  const normalized = raw.replace(/[\s\/]/g, "");
+  let matched = false;
+
+  if (VALID_ENROLLMENTS.has(raw)) {
+    matched = true;
+  } else {
+    // Check if normalized version matches any enrollment
+    for (const e of VALID_ENROLLMENTS) {
+      if (e.replace(/[\s\/]/g, "") === normalized) {
+        matched = true;
+        break;
+      }
+    }
+  }
+
+  if (!matched) {
+    showError("Enrollment number not found. Check spelling or contact your ANO.");
+    document.getElementById("enrollment").focus();
+    return;
+  }
+
+  // ── Verified — start download ──
+  showOk();
+  btn.disabled = true;
+  icon.innerHTML = '<div class="spinner"></div>';
+  text.textContent = "Starting download…";
+
+  // Small delay so cadet sees the success message before browser takes over
+  setTimeout(() => {
+    const a = document.createElement("a");
+    a.href = APK_URL;
+    a.download = "NCC-CRS-v1.2.apk";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Reset button after 3 seconds
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.className = "dl-btn";
+      icon.textContent = "⬇";
+      text.textContent = "Download Again";
+    }, 3000);
+  }, 800);
+}
+
+// ── Also trigger on Enter key ─────────────────────────────────────────────────
+document.getElementById("enrollment").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") handleDownload();
+});
+
+function showError(msg) {
+  document.getElementById("msg-error-text").textContent = msg;
+  document.getElementById("msg-error").classList.add("show");
+}
+function showOk() {
+  document.getElementById("msg-ok").classList.add("show");
+}
+function hideMessages() {
+  document.getElementById("msg-error").classList.remove("show");
+  document.getElementById("msg-ok").classList.remove("show");
+}
+</script>
+</body>
+</html>
